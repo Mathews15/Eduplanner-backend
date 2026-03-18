@@ -9,7 +9,7 @@ import com.eduplan.service.TopicService;
 
 @RestController
 @RequestMapping("/topics")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://eduplanner-frontend.onrender.com/")
 public class TopicController {
 
     private final TopicService topicService;
@@ -28,9 +28,9 @@ public class TopicController {
         return topicService.getTopics();
     }
     
-    @GetMapping("/priority")
-    public List<Topic> getPriorityTopics(){
-        return topicService.getPriorityTopics();
+    @GetMapping("/priority/{userId}")
+    public List<Topic> getPriorityTopics(@PathVariable Long userId){
+        return topicService.getPriorityTopics(userId);
     }
     
     

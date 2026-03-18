@@ -7,7 +7,7 @@ import com.eduplan.model.StudyPlan;
 
 @RestController
 @RequestMapping("/plan")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://eduplanner-frontend.onrender.com/")
 public class StudyPlanController {
 
     private final StudyPlanService planService;
