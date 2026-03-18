@@ -9,7 +9,7 @@ import com.eduplan.service.TopicService;
 
 @RestController
 @RequestMapping("/topics")
-@CrossOrigin(origins = "https://eduplanner-frontend.onrender.com/")
+@CrossOrigin(origins = "https://eduplanner-frontend.onrender.com")
 public class TopicController {
 
     private final TopicService topicService;

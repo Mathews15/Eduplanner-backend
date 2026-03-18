@@ -9,7 +9,7 @@ import com.eduplan.service.StudySessionService;
 
 @RestController
 @RequestMapping("/sessions")
-@CrossOrigin(origins = "https://eduplanner-frontend.onrender.com/")
+@CrossOrigin(origins = "https://eduplanner-frontend.onrender.com")
 public class StudySessionController {
 
     private final StudySessionService sessionService;

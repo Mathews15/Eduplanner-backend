@@ -16,7 +16,7 @@ import com.eduplan.service.SubjectService;
 
 @RestController
 @RequestMapping("/subjects")
-@CrossOrigin(origins = "https://eduplanner-frontend.onrender.com/")
+@CrossOrigin(origins = "https://eduplanner-frontend.onrender.com")
 public class SubjectController {
 
     private final SubjectService subjectService;

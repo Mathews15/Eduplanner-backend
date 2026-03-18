@@ -8,7 +8,7 @@ import com.eduplan.service.AuthService;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "https://eduplanner-frontend.onrender.com/")
+@CrossOrigin(origins = "https://eduplanner-frontend.onrender.com")
 public class AuthController {
 
     @Autowired
