@@ -14,6 +14,15 @@ public class AuthService {
 
     // Register user
     public User registerUser(User user) {
+
+        if(user.getEmail() == null || user.getPassword() == null){
+            throw new RuntimeException("Email or Password is missing");
+        }
+
+        if(userRepository.findByEmail(user.getEmail()) != null){
+            throw new RuntimeException("Email already exists");
+        }
+
         return userRepository.save(user);
     }
 
@@ -22,10 +31,14 @@ public class AuthService {
 
         User user = userRepository.findByEmail(email);
 
-        if (user != null && user.getPassword().equals(password)) {
-            return user;
+        if(user == null){
+            throw new RuntimeException("User not found");
         }
 
-        return null;
+        if(!user.getPassword().equals(password)){
+            throw new RuntimeException("Invalid password");
+        }
+
+        return user;
     }
 }

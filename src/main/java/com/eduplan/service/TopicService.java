@@ -30,10 +30,15 @@ public class TopicService {
 
     // ✅ ADD TOPIC
     public Topic addTopic(Topic topic) {
+
+        if(topic.getSubject() == null){
+            throw new RuntimeException("Subject is missing");
+        }
+
         Long subjectId = topic.getSubject().getId();
 
         Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new RuntimeException("Subject not found"));
+                .orElseThrow(() -> new RuntimeException("Subject not found with id " + subjectId));
 
         topic.setSubject(subject);
 
