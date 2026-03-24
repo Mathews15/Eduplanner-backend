@@ -1,6 +1,7 @@
 package com.eduplan.service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -22,16 +23,15 @@ public class TopicService {
     public TopicService(TopicRepository topicRepository,
                         SubjectRepository subjectRepository,
                         StudySessionRepository sessionRepository) {
-
         this.topicRepository = topicRepository;
         this.subjectRepository = subjectRepository;
         this.sessionRepository = sessionRepository;
     }
 
-    // ✅ ADD TOPIC
+    // ADD TOPIC - also derives user from subject owner
     public Topic addTopic(Topic topic) {
 
-        if(topic.getSubject() == null){
+        if (topic.getSubject() == null) {
             throw new RuntimeException("Subject is missing");
         }
 
@@ -42,37 +42,39 @@ public class TopicService {
 
         topic.setSubject(subject);
 
+        // FIX 2: Set user from subject so findByUser_Id works in plan generation
+        topic.setUser(subject.getUser());
+
         return topicRepository.save(topic);
     }
 
-    // ✅ PRIORITY TOPICS (🔥 FIXED)
-    public List<Topic> getPriorityTopics(Long userId){
+    // PRIORITY TOPICS - only this user's incomplete topics, sorted low proficiency first
+    public List<Topic> getPriorityTopics(Long userId) {
 
-        // all topics
-        List<Topic> topics = topicRepository.findAll();
+        // FIX 1: Fetch only this user's topics, not all topics
+        List<Topic> userTopics = topicRepository.findByUser_Id(userId);
 
-        // all sessions of user
-        List<StudySession> sessions =
-                sessionRepository.findByStudyPlan_User_Id(userId);
+        // Get all completed session topic IDs for this user
+        List<StudySession> sessions = sessionRepository.findByStudyPlan_User_Id(userId);
 
-        // get completed topic IDs
-        List<Long> completedTopicIds = sessions.stream()
-                .filter(s -> s.isCompleted())
+        Set<Long> completedTopicIds = sessions.stream()
+                .filter(StudySession::isCompleted)
                 .map(s -> s.getTopic().getId())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
-        // filter + sort
-        return topics.stream()
-                .filter(t -> !completedTopicIds.contains(t.getId())) // 🔥 REMOVE COMPLETED
-                .sorted((t1, t2) ->
-                        (t2.getDifficultyLevel() - t2.getProficiencyLevel()) -
-                        (t1.getDifficultyLevel() - t1.getProficiencyLevel())
-                )
+        return userTopics.stream()
+                // FIX 1: Remove topics that are completed
+                .filter(t -> !completedTopicIds.contains(t.getId()))
+                // FIX 4: Low proficiency = high priority, so sort ascending
+                .sorted((t1, t2) -> t1.getProficiencyLevel() - t2.getProficiencyLevel())
                 .collect(Collectors.toList());
     }
 
-    // ✅ GET ALL TOPICS
     public List<Topic> getTopics() {
         return topicRepository.findAll();
+    }
+
+    public List<Topic> getTopicsByUser(Long userId) {
+        return topicRepository.findByUser_Id(userId);
     }
 }

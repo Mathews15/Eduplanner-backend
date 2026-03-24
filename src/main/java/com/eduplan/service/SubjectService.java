@@ -26,11 +26,16 @@ public class SubjectService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         subject.setUser(user);
-
         return subjectRepository.save(subject);
     }
-    
-    public List<Subject> getSubjects(){
+
+    // FIX 3: Return only this user's subjects, not all subjects
+    public List<Subject> getSubjectsByUser(Long userId) {
+        return subjectRepository.findByUserId(userId);
+    }
+
+    // Keep for any admin use
+    public List<Subject> getSubjects() {
         return subjectRepository.findAll();
     }
 }

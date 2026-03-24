@@ -9,7 +9,7 @@ import com.eduplan.service.TopicService;
 
 @RestController
 @RequestMapping("/topics")
-@CrossOrigin(origins = "https://eduplanner-frontend.onrender.com")
+@CrossOrigin(origins = {"https://eduplanner-frontend.onrender.com", "http://localhost:5173", "http://localhost:3000"})
 public class TopicController {
 
     private final TopicService topicService;
@@ -27,11 +27,16 @@ public class TopicController {
     public List<Topic> getTopics() {
         return topicService.getTopics();
     }
-    
+
+    // Returns only this user's incomplete topics sorted by low proficiency first
     @GetMapping("/priority/{userId}")
-    public List<Topic> getPriorityTopics(@PathVariable Long userId){
+    public List<Topic> getPriorityTopics(@PathVariable Long userId) {
         return topicService.getPriorityTopics(userId);
     }
-    
-    
+
+    // FIX: Added dedicated endpoint for user's topics
+    @GetMapping("/user/{userId}")
+    public List<Topic> getTopicsByUser(@PathVariable Long userId) {
+        return topicService.getTopicsByUser(userId);
+    }
 }

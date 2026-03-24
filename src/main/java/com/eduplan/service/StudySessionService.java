@@ -28,10 +28,9 @@ public class StudySessionService {
         this.planRepository = planRepository;
     }
 
-    // ✅ CREATE SESSION (SAFE VERSION)
-    public StudySession createSession(StudySession session){
+    public StudySession createSession(StudySession session) {
 
-        if(session.getTopic() == null || session.getStudyPlan() == null){
+        if (session.getTopic() == null || session.getStudyPlan() == null) {
             throw new RuntimeException("Topic or StudyPlan is missing");
         }
 
@@ -50,29 +49,24 @@ public class StudySessionService {
         return sessionRepository.save(session);
     }
 
- // get sessions by plan
-    public List<StudySession> getSessionsByPlan(Long planId){
+    public List<StudySession> getSessionsByPlan(Long planId) {
         return sessionRepository.findByStudyPlanId(planId);
     }
 
-    // ✅ GET SESSIONS BY USER
-    public List<StudySession> getSessionsByUser(Long userId){
+    public List<StudySession> getSessionsByUser(Long userId) {
         return sessionRepository.findByStudyPlan_User_Id(userId);
     }
 
-    // ✅ MARK COMPLETED
-    public StudySession markCompleted(Long sessionId){
+    public StudySession markCompleted(Long sessionId) {
 
         StudySession session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new RuntimeException("Session not found"));
 
         session.setCompleted(true);
-
         return sessionRepository.save(session);
     }
 
-    // ✅ DELETE SESSION
-    public void deleteSession(Long id){
+    public void deleteSession(Long id) {
         sessionRepository.deleteById(id);
     }
 }

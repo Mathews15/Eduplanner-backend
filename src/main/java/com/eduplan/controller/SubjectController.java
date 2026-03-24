@@ -11,38 +11,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eduplan.model.Subject;
-import com.eduplan.repository.SubjectRepository;
 import com.eduplan.service.SubjectService;
 
 @RestController
 @RequestMapping("/subjects")
-@CrossOrigin(origins = "https://eduplanner-frontend.onrender.com")
+@CrossOrigin(origins = {"https://eduplanner-frontend.onrender.com", "http://localhost:5173", "http://localhost:3000"})
 public class SubjectController {
 
     private final SubjectService subjectService;
-    private final SubjectRepository subjectRepository;
 
-    // ✅ FIXED constructor
-    public SubjectController(SubjectService subjectService,
-                             SubjectRepository subjectRepository) {
+    public SubjectController(SubjectService subjectService) {
         this.subjectService = subjectService;
-        this.subjectRepository = subjectRepository;
     }
 
     @PostMapping("/{userId}")
     public Subject addSubject(@PathVariable Long userId,
                               @RequestBody Subject subject) {
-
         return subjectService.addSubject(userId, subject);
     }
-    
-    @GetMapping
-    public List<Subject> getSubjects(){
-        return subjectService.getSubjects();
-    }
-    
+
+    // FIX 3: Return only this user's subjects
     @GetMapping("/user/{userId}")
-    public List<Subject> getSubjectsByUser(@PathVariable Long userId){
-        return subjectRepository.findByUserId(userId);
+    public List<Subject> getSubjectsByUser(@PathVariable Long userId) {
+        return subjectService.getSubjectsByUser(userId);
+    }
+
+    @GetMapping
+    public List<Subject> getSubjects() {
+        return subjectService.getSubjects();
     }
 }
