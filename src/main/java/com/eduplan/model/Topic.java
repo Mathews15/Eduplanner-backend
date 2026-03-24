@@ -19,6 +19,10 @@ public class Topic {
     @ManyToOne
     @JoinColumn(name = "subject_id")
     private Subject subject;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     // getters and setters
 
@@ -56,5 +60,13 @@ public class Topic {
 
     public void setSubject(Subject subject) {
         this.subject = subject;
+    }
+    
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
