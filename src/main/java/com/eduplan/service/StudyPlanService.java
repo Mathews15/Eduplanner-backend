@@ -49,8 +49,9 @@ public class StudyPlanService {
         // 🔥 FIX: get ONLY current user's topics
         List<Topic> topics = topicRepository.findByUser_Id(user.getId());
 
-        if(topics.isEmpty()){
-            throw new RuntimeException("No topics found for user");
+        if (topics == null || topics.isEmpty()) {
+            // ✅ instead of crashing
+            return plan;  // return empty plan safely
         }
 
         // ✅ sort by priority
