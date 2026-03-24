@@ -1,6 +1,7 @@
 package com.eduplan.service;
 
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.eduplan.model.StudyPlan;
@@ -27,8 +28,12 @@ public class StudySessionService {
         this.planRepository = planRepository;
     }
 
-    // create session
+    // ✅ CREATE SESSION (SAFE VERSION)
     public StudySession createSession(StudySession session){
+
+        if(session.getTopic() == null || session.getStudyPlan() == null){
+            throw new RuntimeException("Topic or StudyPlan is missing");
+        }
 
         Long topicId = session.getTopic().getId();
         Long planId = session.getStudyPlan().getId();
@@ -45,17 +50,17 @@ public class StudySessionService {
         return sessionRepository.save(session);
     }
 
-    // get sessions by plan
+ // get sessions by plan
     public List<StudySession> getSessionsByPlan(Long planId){
-        return sessionRepository.findByStudyPlan_Id(planId);
+        return sessionRepository.findByStudyPlanId(planId);
     }
 
-    // get sessions by user (🔥 main API)
+    // ✅ GET SESSIONS BY USER
     public List<StudySession> getSessionsByUser(Long userId){
         return sessionRepository.findByStudyPlan_User_Id(userId);
     }
 
-    // mark completed
+    // ✅ MARK COMPLETED
     public StudySession markCompleted(Long sessionId){
 
         StudySession session = sessionRepository.findById(sessionId)
@@ -65,7 +70,8 @@ public class StudySessionService {
 
         return sessionRepository.save(session);
     }
-    
+
+    // ✅ DELETE SESSION
     public void deleteSession(Long id){
         sessionRepository.deleteById(id);
     }

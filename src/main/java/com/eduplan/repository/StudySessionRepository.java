@@ -6,10 +6,7 @@ import com.eduplan.model.StudySession;
 
 public interface StudySessionRepository extends JpaRepository<StudySession, Long>{
 
+    List<StudySession> findByStudyPlanId(Long planId); // ✅ USE THIS (SIMPLER)
 
-    // ✅ by user id (BEST approach
-    
     List<StudySession> findByStudyPlan_User_Id(Long userId);
-    
-    
 }
