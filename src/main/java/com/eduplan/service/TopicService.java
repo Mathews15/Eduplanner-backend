@@ -48,22 +48,21 @@ public class TopicService {
     // ✅ PRIORITY TOPICS (🔥 FIXED)
     public List<Topic> getPriorityTopics(Long userId){
 
-        // all topics
-        List<Topic> topics = topicRepository.findAll();
+        List<Topic> topics = topicRepository.findByUserId(userId);
 
-        // all sessions of user
         List<StudySession> sessions =
-                sessionRepository.findByStudyPlan_User_Id(userId);
+                sessionRepository.findByStudyPlan_User_Id(userId)
+                .stream()
+                .sorted((s1, s2) -> s2.getId().compareTo(s1.getId())) // latest first
+                .toList();
 
-        // get completed topic IDs
         List<Long> completedTopicIds = sessions.stream()
                 .filter(s -> s.isCompleted())
                 .map(s -> s.getTopic().getId())
                 .collect(Collectors.toList());
 
-        // filter + sort
         return topics.stream()
-                .filter(t -> !completedTopicIds.contains(t.getId())) // 🔥 REMOVE COMPLETED
+                .filter(t -> !completedTopicIds.contains(t.getId()))
                 .sorted((t1, t2) ->
                         (t2.getDifficultyLevel() - t2.getProficiencyLevel()) -
                         (t1.getDifficultyLevel() - t1.getProficiencyLevel())

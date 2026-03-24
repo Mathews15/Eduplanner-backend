@@ -35,6 +35,7 @@ public class StudyPlanService {
         this.userRepository = userRepository;
     }
 
+    // 🔥 👉 PUT YOUR METHOD HERE
     public StudyPlan generatePlan(StudyPlanRequest request){
 
         User user = userRepository.findById(request.getUserId())
@@ -42,13 +43,11 @@ public class StudyPlanService {
 
         StudyPlan plan = new StudyPlan();
         plan.setUser(user);
-
         plan = planRepository.save(plan);
 
-        // ✅ only user's topics
-        List<Topic> topics = topicRepository.findAll();
+        // ✅ only current user's topics
+        List<Topic> topics = topicRepository.findByUserId(user.getId());
 
-        // ✅ safety check
         if(topics.isEmpty()){
             throw new RuntimeException("No topics found for user");
         }
@@ -61,10 +60,8 @@ public class StudyPlanService {
 
         LocalDate startDate = LocalDate.parse(request.getStartDate());
 
-        // 🔥 FIXED LOOP (no repetition issue)
-        for(int i=0;i<request.getDays();i++){
-
-            Topic topic = topics.get(i % topics.size()); // ✅ FIX
+        for(int i = 0; i < request.getDays(); i++){
+            Topic topic = topics.get(i % topics.size());
 
             StudySession session = new StudySession();
             session.setTopic(topic);

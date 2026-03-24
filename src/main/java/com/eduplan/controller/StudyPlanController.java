@@ -20,4 +20,6 @@ public class StudyPlanController {
     public StudyPlan generatePlan(@RequestBody StudyPlanRequest request) {
         return planService.generatePlan(request);
     }
+    
+    
 }
