@@ -38,16 +38,9 @@ public class TopicService {
         Long subjectId = topic.getSubject().getId();
 
         Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new RuntimeException("Subject not found"));
+                .orElseThrow(() -> new RuntimeException("Subject not found with id " + subjectId));
 
         topic.setSubject(subject);
-
-        // 🔥 ADD THIS PART
-        if(topic.getUser() == null){
-            throw new RuntimeException("User is missing");
-        }
-
-        // (optional: fetch from DB if needed)
 
         return topicRepository.save(topic);
     }
@@ -55,14 +48,14 @@ public class TopicService {
     // ✅ PRIORITY TOPICS (🔥 FIXED)
     public List<Topic> getPriorityTopics(Long userId){
 
-        // ✅ get only user's topics
-        List<Topic> topics = topicRepository.findBySubjectUserId(userId);
+        // all topics
+        List<Topic> topics = topicRepository.findAll();
 
         // all sessions of user
         List<StudySession> sessions =
                 sessionRepository.findByStudyPlan_User_Id(userId);
 
-        // completed topic IDs
+        // get completed topic IDs
         List<Long> completedTopicIds = sessions.stream()
                 .filter(s -> s.isCompleted())
                 .map(s -> s.getTopic().getId())
@@ -70,7 +63,7 @@ public class TopicService {
 
         // filter + sort
         return topics.stream()
-                .filter(t -> !completedTopicIds.contains(t.getId()))
+                .filter(t -> !completedTopicIds.contains(t.getId())) // 🔥 REMOVE COMPLETED
                 .sorted((t1, t2) ->
                         (t2.getDifficultyLevel() - t2.getProficiencyLevel()) -
                         (t1.getDifficultyLevel() - t1.getProficiencyLevel())
