@@ -6,6 +6,5 @@ import com.eduplan.model.Topic;
 
 public interface TopicRepository extends JpaRepository<Topic, Long>{
 
-    // ✅ correct method
-    List<Topic> findByUserId(Long userId);
+    List<Topic> findByUser_Id(Long userId); // ✅ FIXED
 }
